@@ -38,7 +38,7 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     is_renter = models.BooleanField(default=False)
-    tlf = models.CharField(max_length=10, blank=True)
+    phone = models.CharField(max_length=10, blank=True)
 
     objects = CustomUserManager()
 

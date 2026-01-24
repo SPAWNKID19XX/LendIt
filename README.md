@@ -56,3 +56,10 @@ The system dynamically calculates item availability for specific date ranges, ex
   "start_date": "2026-06-01",
   "end_date": "2026-06-05"
 }
+```
+
+## Management Data
+| Description     | Command                    | 
+|:----------------|:---------------------------| 
+| 50 new users    | ./manage.py new_users      | 
+| Fuel categories | ./manage.py new_categories | 
