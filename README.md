@@ -59,7 +59,9 @@ The system dynamically calculates item availability for specific date ranges, ex
 ```
 
 ## Management Data
-| Description     | Command                    | 
-|:----------------|:---------------------------| 
-| 50 new users    | ./manage.py new_users      | 
-| Fuel categories | ./manage.py new_categories | 
+| Description     | Command                     | 
+|:----------------|:----------------------------| 
+| 50 new users    | ./manage.py new_users       | 
+| Fuel categories | ./manage.py new_categories  | 
+| Fuel 5000 items | ./manage.py new_items       | 
+| Fuel items img  | ./manage.py new_item_imgs   | 
