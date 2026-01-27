@@ -11,11 +11,11 @@ class ItemImagesSerializers(serializers.ModelSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
     images = ItemImagesSerializers(many=True)
-    owner_short_data = ShortCustomUserSerializer(read_only=True)
+    owner = ShortCustomUserSerializer(read_only=True)
     city_display_name = serializers.CharField(source='get_city_display', read_only=True)
     class Meta:
         model = Item
-        fields = ['title', 'description','owner_short_data','images', 'category','price','city','city_display_name']
+        fields = ['title', 'description','owner','images', 'category','price','city','city_display_name']
 
 
     def create(self, validated_data):
