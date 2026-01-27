@@ -1,6 +1,6 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-
+from rest_framework import generics
 from .models import CustomUser
 
 
@@ -24,3 +24,7 @@ class ShortCustomUserSerializer(serializers.ModelSerializer):
         fields = ('email','first_name','phone')
 
 
+class CustomUserUpdateSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('first_name','last_name',"phone")

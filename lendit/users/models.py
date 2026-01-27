@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser, UserManager,BaseUserManager
+from django.core.validators import RegexValidator
 from django.db import models
 
 
@@ -33,12 +34,17 @@ class CustomUserManager(BaseUserManager):
 
 # Create your models here.
 class CustomUser(AbstractUser):
+    pfone_regex_code = RegexValidator(
+        regex=r'^(\+351|\(\+351\))?9\d{8}$',
+        message="Enter a valid PT number in next format (+351)999999999 or +351999999999 or 999999999"
+    )
+
     username = None
     email = models.EmailField('email address', unique=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     is_renter = models.BooleanField(default=False)
-    phone = models.CharField(max_length=10, blank=True)
+    phone = models.CharField(validators=[pfone_regex_code], max_length=14, blank=True)
 
     objects = CustomUserManager()
 
