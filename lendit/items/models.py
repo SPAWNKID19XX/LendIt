@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+from django.core.validators import MinValueValidator, MinLengthValidator
 from django.db import models
 from django.conf import settings
 
@@ -31,12 +34,12 @@ class City(models.TextChoices):
     FUNCHAL = "FNC", "Funchal"
 
 class Item(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, validators=[MinLengthValidator(5)])
     description = models.TextField()
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='items')
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='items')
     city = models.CharField(max_length=50, choices=City.choices, default=City.LISBON.value)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal('1.00'))])
 
 class ItemImage(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='images')
