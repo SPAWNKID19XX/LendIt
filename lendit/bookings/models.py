@@ -9,7 +9,7 @@ from datetime import timedelta
 class StatusBooking(models.TextChoices):
     PENDING = "PENDING", "PENDING"
     CONFIRMED = "CONFIRMED", "CONFIRMED"
-    REJECTED = "CANCELED", "CANCELED"
+    CANCELED = "CANCELED", "CANCELED"
 
 
 class Booking(models.Model):
