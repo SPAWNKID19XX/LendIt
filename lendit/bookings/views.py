@@ -1,3 +1,5 @@
+from gc import get_objects
+
 from django.shortcuts import render
 from rest_framework import viewsets, generics
 from rest_framework.exceptions import PermissionDenied
@@ -23,21 +25,19 @@ class BookingsRetrieveUpdateDestroyMyBooksAPIView(generics.RetrieveUpdateDestroy
 
     def perform_update(self, serializer):
         instance = self.get_object()
-        old_status = instance.status
-        item = serializer.validated_data.get('item', self.get_object().item)
-        owner = item.owner
-        if self.request.user != owner:
-            raise PermissionDenied('You are not allowed to perform this action')
-        if old_status == StatusBooking.CONFIRMED:
+        new_status = serializer.validated_data.get('status', None)
+
+        if instance.status in [StatusBooking.CANCELED, StatusBooking.REJECTED]:
+            raise PermissionDenied(detail=f"Booking already {instance.status}. Update does not allowed")
+
+        if new_status and new_status in [StatusBooking.CONFIRMED, StatusBooking.REJECTED]:
+            if self.request.user != instance.item.owner:
+                raise  PermissionDenied(detail=f"Booking could be Updated Just By owner")
+        if new_status and new_status == StatusBooking.CANCELED:
+            if self.request.user != instance.customer:
+                raise PermissionDenied(detail=f"Booking could be Canceled Just By customer")
+        if instance.status == StatusBooking.CONFIRMED:
             if 'start_date' in serializer.validated_data or 'end_date' in serializer.validated_data:
-                raise PermissionDenied("You cannot change dates of a confirmed booking.")
-
-        new_status = serializer.validated_data.get('status')
-
-        if new_status:
-            if new_status in [Booking.CONFIRMED, Booking.PENDING]:
-                raise PermissionDenied("Only owner could confirm/reject the booking.")
-            if new_status == Booking.CANCELED:
-                raise PermissionDenied("Only renter can cancel booking.")
-
+                if instance.start_data != serializer.validated_data['start_date'] or instance.end_data != serializer.validated_data['end_date']:
+                    raise PermissionDenied("Dates are frozen once confirmed.")
         serializer.save()
