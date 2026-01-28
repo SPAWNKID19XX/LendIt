@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'users.apps.UsersConfig',
     'items.apps.ItemsConfig',
+    'bookings.apps.BookingsConfig',
 
 ]
 
