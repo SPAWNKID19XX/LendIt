@@ -19,8 +19,8 @@ class Migration(migrations.Migration):
             name='Booking',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
+                ('start_data', models.DateField()),
+                ('end_data', models.DateField()),
                 ('price_per_day', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
                 ('final_price', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
                 ('status', models.CharField(choices=[('PENDING', 'PENDING'), ('CONFIRMED', 'CONFIRMED'), ('CANCELED', 'CANCELED')], default='PENDING', max_length=10)),
