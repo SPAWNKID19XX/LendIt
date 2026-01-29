@@ -34,7 +34,6 @@ class Booking(models.Model):
             raise ValidationError("Item is busy")
         if not self.id:
             days = max((self.end_data - self.start_data).days, 1)
-            print("not exist: - ", days)
             self.price_per_day = self.item.price
             self.final_price = self.price_per_day * days
 
