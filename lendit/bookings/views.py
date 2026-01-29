@@ -1,6 +1,4 @@
-from gc import get_objects
-
-from django.shortcuts import render
+from .tasks import send_bookong_notifications
 from rest_framework import viewsets, generics
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -20,6 +18,12 @@ class BookingsCreateListMyBooksAPIViewSet(generics.ListCreateAPIView):
         qs = Booking.objects.select_related('item','customer','item__owner')
         return qs.filter(Q(item__owner=self.request.user) | Q(customer=self.request.user))
 
+    def perform_create(self, serializer):
+        instance = serializer.save(customer=self.request.user)
+        send_bookong_notifications.delay(instance.id)
+
+
+
 class BookingsRetrieveUpdateDestroyMyBooksAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BookingSerializer
 
@@ -37,7 +41,9 @@ class BookingsRetrieveUpdateDestroyMyBooksAPIView(generics.RetrieveUpdateDestroy
             if self.request.user != instance.customer:
                 raise PermissionDenied(detail=f"Booking could be Canceled Just By customer")
         if instance.status == StatusBooking.CONFIRMED:
-            if 'start_date' in serializer.validated_data or 'end_date' in serializer.validated_data:
-                if instance.start_data != serializer.validated_data['start_date'] or instance.end_data != serializer.validated_data['end_date']:
+            if 'start_data' in serializer.validated_data or 'end_data' in serializer.validated_data:
+                if instance.start_data != serializer.validated_data['start_data'] or instance.end_data != serializer.validated_data['end_data']:
                     raise PermissionDenied("Dates are frozen once confirmed.")
+
+        send_bookong_notifications.delay(instance.id)
         serializer.save()
